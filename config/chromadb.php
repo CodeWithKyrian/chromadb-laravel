@@ -11,7 +11,7 @@ return [
      | Here you may specify your ChromaDB Host. This is the host where your ChromaDB
      | instance is running. This is used to connect to your ChromaDB instance.
      */
-    'host' => env('CHROMADB_HOST', 'localhost'),
+    'host' => env('CHROMA_HOST', 'localhost'),
 
     /*
      |--------------------------------------------------------------------------
@@ -21,7 +21,7 @@ return [
      | Here you may specify your ChromaDB Port. This is the port where your ChromaDB
      | instance is running. This is used to connect to your ChromaDB instance.
      */
-    'port' => env('CHROMADB_PORT', 8000),
+    'port' => env('CHROMA_PORT', 8000),
 
     /*
      |--------------------------------------------------------------------------
@@ -30,7 +30,7 @@ return [
      |
      | This is the tenant that you want to connect to.
      */
-    'tenant' => env('CHROMADB_TENANT', 'default_tenant'),
+    'tenant' => env('CHROMA_TENANT', 'default_tenant'),
 
     /*
      |--------------------------------------------------------------------------
@@ -39,6 +39,6 @@ return [
      |
      | This is the database that you want to connect to.
      */
-    'database' => env('CHROMADB_DATABASE', 'default_database'),
+    'database' => env('CHROMA_DATABASE', 'default_database'),
 ];
 
