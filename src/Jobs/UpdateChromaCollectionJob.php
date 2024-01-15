@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Codewithkyrian\ChromaDB\Jobs;
 
 use Codewithkyrian\ChromaDB\Contracts\ChromaModel;
@@ -15,7 +17,8 @@ class UpdateChromaCollectionJob implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public function __construct(
-        public Model&ChromaModel $model,
+        protected Model&ChromaModel $model,
+        protected array             $changedFields,
     )
     {
         $this->onQueue(config('chromadb.sync.queue'));
@@ -24,11 +27,33 @@ class UpdateChromaCollectionJob implements ShouldQueue
 
     public function handle(): void
     {
-       $this->model::getChromaCollection()->upsert(
-            ids: [strval($this->model->getKey())],
-            metadatas: [$this->model->generateMetadata()],
-            documents: [$this->model->generateChromaDocument()],
-        );
+        // If there are no changes, no need to update the chroma collection
+        if (empty($this->changedFields)) return;
+
+        $metadata = null;
+        $document = null;
+
+        // Helper function to check if any fields in fieldsArray are among the changed attributes
+        $fieldsChanged = function ($fieldsArray){
+            return $fieldsArray && count(array_intersect($fieldsArray, $this->changedFields)) > 0;
+        };
+
+        if ($fieldsChanged($this->model->metadataFields())) {
+            $metadata = $this->model->generateMetadata();
+        }
+
+        if ($fieldsChanged($this->model->documentFields())) {
+            $document = $this->model->generateChromaDocument();
+        }
+
+        // If any of the fields in metadataFields() or documentFields() is among the changed attributes
+        if ($metadata || $document) {
+            $this->model::getChromaCollection()->upsert(
+                ids: [strval($this->model->getKey())],
+                metadatas: $metadata ? [$metadata] : null,
+                documents: $document ? [$document] : null,
+            );
+        }
     }
 
     public function tries(): int

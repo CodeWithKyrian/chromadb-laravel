@@ -42,11 +42,58 @@ return [
     'database' => env('CHROMA_DATABASE', 'default_database'),
 
 
+    /*
+     |--------------------------------------------------------------------------
+     | ChromaDB Sync
+     |--------------------------------------------------------------------------
+     |
+     | This is the configuration for the ChromaDB Sync feature. This feature
+     | allows you to sync data from your local database to your ChromaDB
+     | instance.
+     */
     'sync' => [
+
+        /*
+         |--------------------------------------------------------------------------
+         | ChromaDB Sync Enabled
+         |--------------------------------------------------------------------------
+         |
+         | This option controls whether the ChromaDB Sync feature is enabled. If
+         | this is set to false, then the ChromaDB Sync feature will not be
+         | enabled.
+         */
         'enabled' => env('CHROMA_SYNC_ENABLED', false),
+
+        /*
+         |--------------------------------------------------------------------------
+         | ChromaDB Sync Queue
+         |--------------------------------------------------------------------------
+         |
+         | This option controls which queue the ChromaDB Sync feature will use.
+         | This is used to queue the sync jobs.
+         */
         'queue' => env('CHROMA_SYNC_QUEUE', 'default'),
+
+        /*
+         |--------------------------------------------------------------------------
+         | ChromaDB Sync Connection
+         |--------------------------------------------------------------------------
+         |
+         | This option controls which connection the ChromaDB Sync feature will use.
+         | This is used to queue the sync jobs.
+         */
         'connection' => env('CHROMA_SYNC_CONNECTION', 'database'),
+
+        /*
+         |--------------------------------------------------------------------------
+         | ChromaDB Sync Tries
+         |--------------------------------------------------------------------------
+         |
+         | This option controls how many times the Job will be retried if it fails
+         | while trying to sync the data to ChromaDB.
+         */
         'tries' => env('CHROMA_SYNC_TRIES', 3),
+
     ],
 ];
 

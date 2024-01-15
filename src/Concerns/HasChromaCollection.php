@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-
 namespace Codewithkyrian\ChromaDB\Concerns;
 
 use Codewithkyrian\ChromaDB\Embeddings\EmbeddingFunction;
@@ -16,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
  * @method mixed getKey()
  * @method string getTable()
  * @method mixed getAttribute(string $field)
+ * @method array getChanges()
  * @method self saved(\Illuminate\Events\QueuedClosure|\Closure|string|array $callback)
  * @method self deleted(\Illuminate\Events\QueuedClosure|\Closure|string|array $callback)
  */
@@ -34,10 +34,12 @@ trait HasChromaCollection
 
         if (config('chromadb.sync.enabled')) {
             static::saved(function (self $model) {
+                $changedFields = array_keys($model->getChanges());
+
                 if (!config('chromadb.sync.queue', false)) {
-                    UpdateChromaCollectionJob::dispatchSync($model);
+                    UpdateChromaCollectionJob::dispatchSync($model, $changedFields);
                 } else {
-                    UpdateChromaCollectionJob::dispatch($model);
+                    UpdateChromaCollectionJob::dispatch($model, $changedFields);
                 }
             });
 
