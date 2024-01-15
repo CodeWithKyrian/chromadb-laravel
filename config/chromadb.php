@@ -40,5 +40,13 @@ return [
      | This is the database that you want to connect to.
      */
     'database' => env('CHROMA_DATABASE', 'default_database'),
+
+
+    'sync' => [
+        'enabled' => env('CHROMA_SYNC_ENABLED', false),
+        'queue' => env('CHROMA_SYNC_QUEUE', 'default'),
+        'connection' => env('CHROMA_SYNC_CONNECTION', 'database'),
+        'tries' => env('CHROMA_SYNC_TRIES', 3),
+    ],
 ];
 

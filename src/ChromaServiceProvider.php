@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 namespace Codewithkyrian\ChromaDB;
 
-use Codewithkyrian\ChromaDB\ChromaDB;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 

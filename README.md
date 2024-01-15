@@ -128,5 +128,3 @@ the [LICENSE](https://github.com/codewithkyrian/chromadb-php/blob/main/LICENSE) 
 
 
 
-
-
