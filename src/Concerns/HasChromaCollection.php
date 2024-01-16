@@ -7,6 +7,7 @@ namespace Codewithkyrian\ChromaDB\Concerns;
 use Codewithkyrian\ChromaDB\Contracts\ChromaModel;
 use Codewithkyrian\ChromaDB\Embeddings\EmbeddingFunction;
 use Codewithkyrian\ChromaDB\Facades\ChromaDB;
+use Codewithkyrian\ChromaDB\Jobs\DeleteChromaCollectionItemJob;
 use Codewithkyrian\ChromaDB\Jobs\UpdateChromaCollectionJob;
 use Codewithkyrian\ChromaDB\Resources\CollectionResource;
 use Illuminate\Database\Eloquent\Model;
@@ -20,8 +21,10 @@ trait HasChromaCollection
     protected static function bootHasChromaCollection(): void
     {
         if (config('chromadb.sync.enabled')) {
+
             static::saved(function (Model&ChromaModel $model) {
-                $changedFields = array_keys($model->getChanges());
+                $changes = $model->wasRecentlyCreated ? $model->getAttributes() : $model->getChanges();
+                $changedFields = array_keys($changes);
 
                 if (!config('chromadb.sync.queue', false)) {
                     UpdateChromaCollectionJob::dispatchSync($model, $changedFields);
@@ -31,7 +34,11 @@ trait HasChromaCollection
             });
 
             static::deleted(function (Model&ChromaModel $model) {
-                self::getChromaCollection()->delete([$model->getKey()]);
+                if(!config('chromadb.sync.queue', false)) {
+                    DeleteChromaCollectionItemJob::dispatchSync($model::class, $model->getKey());
+                } else {
+                    DeleteChromaCollectionItemJob::dispatch($model::class, $model->getKey());
+                }
             });
         }
     }
@@ -40,7 +47,7 @@ trait HasChromaCollection
     {
         $model = new static();
 
-        static::$chromaCollection ??= ChromaDB::getOrCreateCollection(
+        static::$chromaCollection = ChromaDB::getOrCreateCollection(
             name: $model->collectionName(),
             embeddingFunction: $model->embeddingFunction(),
         );
@@ -131,13 +138,8 @@ trait HasChromaCollection
 
     public static function truncateChromaCollection(): void
     {
-        $model = new static();
+        $collection = self::getChromaCollection();
 
-        ChromaDB::deleteCollection(self::getChromaCollection()->name);
-
-        static::$chromaCollection = ChromaDB::getOrCreateCollection(
-            name: $model->collectionName(),
-            embeddingFunction: $model->embeddingFunction(),
-        );;
+        $collection->delete($collection->get()->ids);
     }
 }
