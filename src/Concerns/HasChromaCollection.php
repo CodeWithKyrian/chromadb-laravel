@@ -4,36 +4,23 @@ declare(strict_types=1);
 
 namespace Codewithkyrian\ChromaDB\Concerns;
 
+use Codewithkyrian\ChromaDB\Contracts\ChromaModel;
 use Codewithkyrian\ChromaDB\Embeddings\EmbeddingFunction;
 use Codewithkyrian\ChromaDB\Facades\ChromaDB;
 use Codewithkyrian\ChromaDB\Jobs\UpdateChromaCollectionJob;
 use Codewithkyrian\ChromaDB\Resources\CollectionResource;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 
-/**
- * @method mixed getKey()
- * @method string getTable()
- * @method mixed getAttribute(string $field)
- * @method array getChanges()
- * @method self saved(\Illuminate\Events\QueuedClosure|\Closure|string|array $callback)
- * @method self deleted(\Illuminate\Events\QueuedClosure|\Closure|string|array $callback)
- */
 trait HasChromaCollection
 {
     private static ?CollectionResource $chromaCollection;
 
     protected static function bootHasChromaCollection(): void
     {
-        $model = new static();
-
-        static::$chromaCollection = ChromaDB::getOrCreateCollection(
-            name: $model->collectionName(),
-            embeddingFunction: $model->embeddingFunction(),
-        );
-
         if (config('chromadb.sync.enabled')) {
-            static::saved(function (self $model) {
+            static::saved(function (Model&ChromaModel $model) {
                 $changedFields = array_keys($model->getChanges());
 
                 if (!config('chromadb.sync.queue', false)) {
@@ -43,7 +30,7 @@ trait HasChromaCollection
                 }
             });
 
-            static::deleted(function (self $model) {
+            static::deleted(function (Model&ChromaModel $model) {
                 self::getChromaCollection()->delete([$model->getKey()]);
             });
         }
@@ -51,6 +38,14 @@ trait HasChromaCollection
 
     public static function getChromaCollection(): CollectionResource
     {
+        $model = new static();
+
+        static::$chromaCollection ??= ChromaDB::getOrCreateCollection(
+            name: $model->collectionName(),
+            embeddingFunction: $model->embeddingFunction(),
+        );
+
+
         return static::$chromaCollection;
     }
 
@@ -83,7 +78,7 @@ trait HasChromaCollection
      *
      * @return string[]
      */
-    protected function metadataFields(): array
+    public function metadataFields(): array
     {
         return ['id'];
     }
@@ -93,7 +88,7 @@ trait HasChromaCollection
      *
      * @return string[]
      */
-    protected function documentFields(): array
+    public function documentFields(): array
     {
         return [];
     }
@@ -101,7 +96,7 @@ trait HasChromaCollection
     /**
      * The embedding function to use for the collection.
      */
-    protected function embeddingFunction(): ?EmbeddingFunction
+    public function embeddingFunction(): ?EmbeddingFunction
     {
         return null;
     }
@@ -109,13 +104,13 @@ trait HasChromaCollection
     /**
      * The collection name to use for the model.
      */
-    protected function collectionName(): string
+    public function collectionName(): string
     {
         return $this->getTable();
     }
 
 
-    private function generateMetadata(): array
+    public function generateMetadata(): array
     {
 
         return collect($this->metadataFields())
@@ -125,7 +120,7 @@ trait HasChromaCollection
             ->toArray();
     }
 
-    protected function generateChromaDocument(): string
+    public function generateChromaDocument(): string
     {
         return collect($this->documentFields())
             ->map(function (string $field) {

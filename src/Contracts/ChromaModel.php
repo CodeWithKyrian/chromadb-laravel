@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Codewithkyrian\ChromaDB\Contracts;
 
+use Codewithkyrian\ChromaDB\Embeddings\EmbeddingFunction;
 use Codewithkyrian\ChromaDB\Resources\CollectionResource;
 
 interface ChromaModel
@@ -11,7 +12,7 @@ interface ChromaModel
 
     public function collectionName(): string;
 
-    public function embeddingFunction(): string;
+    public function embeddingFunction(): ?EmbeddingFunction;
 
     function metadataFields(): array;
 
@@ -19,7 +20,7 @@ interface ChromaModel
 
     public function generateMetadata(): array;
 
-    public function generateChromaDocument(): array;
+    public function generateChromaDocument(): string;
 
     public static function getChromaCollection(): CollectionResource;
 

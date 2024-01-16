@@ -62,7 +62,7 @@ return [
          | this is set to false, then the ChromaDB Sync feature will not be
          | enabled.
          */
-        'enabled' => env('CHROMA_SYNC_ENABLED', false),
+        'enabled' => env('CHROMA_SYNC_ENABLED', true),
 
         /*
          |--------------------------------------------------------------------------
