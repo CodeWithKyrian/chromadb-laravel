@@ -14,4 +14,9 @@
             <directory suffix=".php">./src</directory>
         </include>
     </source>
+    <php>
+        <env name="APP_ENV" value="testing"/>
+        <env name="CHROMA_TENANT" value="test_tenant"/>
+        <env name="CHROMA_DATABASE" value="test_database"/>
+    </php>
 </phpunit>

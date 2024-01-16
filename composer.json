@@ -1,58 +1,76 @@
 {
-  "name": "codewithkyrian/chromadb-laravel",
-  "description": "ChromaDB Laravel is a Laravel client for the Chroma Open Source Embedding Database",
-  "keywords": [
-    "chromadb",
-    "php",
-    "laravel",
-    "embedding",
-    "sdk",
-    "database",
-    "vectors",
-    "semantic",
-    "search",
-    "chroma",
-    "open-source"
-  ],
-  "type": "library",
-  "license": "MIT",
-  "require": {
-    "php": "^8.1",
-    "laravel/framework": "^9.46.0|^10.34.2|^11.0",
-    "codewithkyrian/chromadb-php": "^0.1.0"
-  },
-  "require-dev": {
-    "pestphp/pest": "^2.19",
-    "symfony/var-dumper": "^6.3 |^7.0.1",
-    "mockery/mockery": "^1.6"
-  },
-  "autoload": {
-    "psr-4": {
-      "Codewithkyrian\\ChromaDB\\": "src/"
+    "name": "codewithkyrian/chromadb-laravel",
+    "description": "ChromaDB Laravel is a Laravel client for the Chroma Open Source Embedding Database",
+    "keywords": [
+        "chromadb",
+        "php",
+        "laravel",
+        "embedding",
+        "sdk",
+        "database",
+        "vectors",
+        "semantic",
+        "search",
+        "chroma",
+        "open-source"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": "^8.1",
+        "laravel/framework": "^9.46.0|^10.34.2|^11.0",
+        "codewithkyrian/chromadb-php": "^0.1.0"
+    },
+    "require-dev": {
+        "pestphp/pest": "^2.19",
+        "symfony/var-dumper": "^6.3 |^7.0.1",
+        "mockery/mockery": "^1.6",
+        "orchestra/testbench": "^8.20"
+    },
+    "autoload": {
+        "psr-4": {
+            "Codewithkyrian\\ChromaDB\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Kyrian Obikwelu",
+            "email": "kyrianobikwelu@gmail.com"
+        }
+    ],
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Codewithkyrian\\ChromaDB\\ChromaServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest",
+        "test:coverage": "XDEBUG_MODE=coverage ./vendor/bin/pest --coverage",
+        "post-autoload-dump": [
+            "@clear",
+            "@prepare"
+        ],
+        "clear": "@php vendor/bin/testbench package:purge-skeleton --ansi",
+        "prepare": "@php vendor/bin/testbench package:discover --ansi",
+        "build": "@php vendor/bin/testbench workbench:build --ansi",
+        "serve": [
+            "Composer\\Config::disableProcessTimeout",
+            "@build",
+            "@php vendor/bin/testbench serve"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Codewithkyrian\\ChromaDB\\Tests\\": "tests/"
+        }
     }
-  },
-  "authors": [
-    {
-      "name": "Kyrian Obikwelu",
-      "email": "kyrianobikwelu@gmail.com"
-    }
-  ],
-  "config": {
-    "allow-plugins": {
-      "pestphp/pest-plugin": true
-    }
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "extra": {
-    "laravel": {
-      "providers": [
-        "Codewithkyrian\\ChromaDB\\ChromaServiceProvider"
-      ]
-    }
-  },
-  "scripts": {
-    "test": "vendor/bin/pest",
-    "test:coverage": "XDEBUG_MODE=coverage ./vendor/bin/pest --coverage"
-  }
 }

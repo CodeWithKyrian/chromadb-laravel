@@ -22,6 +22,8 @@ class ChromaServiceProvider extends ServiceProvider implements DeferrableProvide
 
     public function register(): void
     {
+        $this->mergeConfigFrom(__DIR__ . '/../config/chromadb.php', 'chromadb');
+
         $this->app->singleton('chromadb', function () {
             return ChromaDB::factory()
                 ->withHost(config('chromadb.host'))
@@ -37,4 +39,8 @@ class ChromaServiceProvider extends ServiceProvider implements DeferrableProvide
         return ['chromadb'];
     }
 
+    public function defers() : array
+    {
+        return ['chromadb'];
+    }
 }
