@@ -18,14 +18,14 @@
     "license": "MIT",
     "require": {
         "php": "^8.1",
-        "laravel/framework": "^9.46.0|^10.34.2|^11.0",
+        "laravel/framework": "^9.46.0|^10.34.2",
         "codewithkyrian/chromadb-php": "^0.1.0"
     },
     "require-dev": {
         "pestphp/pest": "^2.19",
         "symfony/var-dumper": "^6.3 |^7.0.1",
         "mockery/mockery": "^1.6",
-        "orchestra/testbench": "^7.0 | ^8.20 | ^9.0"
+        "orchestra/testbench": "^7.0 | ^8.20"
     },
     "autoload": {
         "psr-4": {
