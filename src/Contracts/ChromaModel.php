@@ -18,9 +18,9 @@ interface ChromaModel
 
     function documentFields(): array;
 
-    public function generateMetadata(): array;
+    public function toChromaMetadata(): array;
 
-    public function generateChromaDocument(): string;
+    public function toChromaDocument(): string;
 
     public static function getChromaCollection(): CollectionResource;
 

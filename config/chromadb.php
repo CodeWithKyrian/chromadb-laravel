@@ -70,7 +70,8 @@ return [
          |--------------------------------------------------------------------------
          |
          | This option controls which queue the ChromaDB Sync feature will use.
-         | This is used to queue the sync jobs.
+         | This is used to queue the sync jobs. Set to false to disable queueing
+         | and run the sync jobs immediately.
          */
         'queue' => env('CHROMA_SYNC_QUEUE', 'default'),
 

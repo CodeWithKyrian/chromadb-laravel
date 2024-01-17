@@ -39,11 +39,11 @@ class UpdateChromaCollectionJob implements ShouldQueue
         };
 
         if ($fieldsChanged($this->model->metadataFields())) {
-            $metadata = $this->model->generateMetadata();
+            $metadata = $this->model->toChromaMetadata();
         }
 
         if ($fieldsChanged($this->model->documentFields())) {
-            $document = $this->model->generateChromaDocument();
+            $document = $this->model->toChromaDocument();
         }
 
         // If any of the fields in metadataFields() or documentFields() is among the changed attributes

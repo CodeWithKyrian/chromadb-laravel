@@ -34,7 +34,7 @@ trait HasChromaCollection
             });
 
             static::deleted(function (Model&ChromaModel $model) {
-                if(!config('chromadb.sync.queue', false)) {
+                if (!config('chromadb.sync.queue', false)) {
                     DeleteChromaCollectionItemJob::dispatchSync($model::class, $model->getKey());
                 } else {
                     DeleteChromaCollectionItemJob::dispatch($model::class, $model->getKey());
@@ -56,11 +56,21 @@ trait HasChromaCollection
         return static::$chromaCollection;
     }
 
-    public function scopeQueryChromaCollection(Builder $query, string $queryText, int $nResults = 10): void
+    public function scopeQueryChromaCollection(
+        Builder $query,
+        string  $queryText,
+        int     $nResults = 10,
+        array   $where = null,
+        array   $whereDocument = null,
+        array   $include = null
+    ): void
     {
         $queryResponse = self::getChromaCollection()->query(
             queryTexts: [$queryText],
             nResults: $nResults,
+            where: $where,
+            whereDocument: $whereDocument,
+            include: $include
         );
 
         $ids = $queryResponse->ids[0];
@@ -101,14 +111,6 @@ trait HasChromaCollection
     }
 
     /**
-     * The embedding function to use for the collection.
-     */
-    public function embeddingFunction(): ?EmbeddingFunction
-    {
-        return null;
-    }
-
-    /**
      * The collection name to use for the model.
      */
     public function collectionName(): string
@@ -117,7 +119,7 @@ trait HasChromaCollection
     }
 
 
-    public function generateMetadata(): array
+    public function toChromaMetadata(): array
     {
 
         return collect($this->metadataFields())
@@ -127,7 +129,7 @@ trait HasChromaCollection
             ->toArray();
     }
 
-    public function generateChromaDocument(): string
+    public function toChromaDocument(): string
     {
         return collect($this->documentFields())
             ->map(function (string $field) {
