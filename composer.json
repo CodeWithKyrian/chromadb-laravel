@@ -22,7 +22,7 @@
         "codewithkyrian/chromadb-php": "^0.1.0"
     },
     "require-dev": {
-        "pestphp/pest": "^2.15",
+        "pestphp/pest": "^1.9.1 | ^2.15",
         "symfony/var-dumper": "^6.3 |^7.0.1",
         "mockery/mockery": "^1.6",
         "orchestra/testbench": "^7.0 | ^8.20"
